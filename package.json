@@ -3,9 +3,15 @@
   "version": "1.0.0",
   "description": "stuff",
   "main": "index.js",
+  "displayName": "Discord Hypixel Bot Extention",
+  "extensionPack": [
+    "Simple-Discord-Commands"
+  ],
+  "readme": "https://github.com/a1cd/Discord-Hypixel#readme",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "types": "./src/types/index.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/a1cd/Discord-Hypixel.git"
@@ -18,5 +24,10 @@
   "bugs": {
     "url": "https://github.com/a1cd/Discord-Hypixel/issues"
   },
-  "homepage": "https://github.com/a1cd/Discord-Hypixel#readme"
+  "homepage": "https://github.com/a1cd/Discord-Hypixel#readme",
+  "dependencies": {
+    "command-based-discord": "^1.0.0",
+    "hypixel-api": "^1.2.0",
+    "hypixel-api-v2": "^1.2.25"
+  }
 }
