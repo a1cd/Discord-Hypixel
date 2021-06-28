@@ -1,6 +1,7 @@
 const Hypixel = require('hypixel-api-v2');
 const Discord = require('discord.js');
 const {command} = require('command-based-discord');
+const MinecraftAPI = require("minecraft-api")
 
 let display = {
   "Bedwars": {
@@ -44,9 +45,9 @@ let display = {
     "Wins": "wins"
   },
   "TNTGames": {
-    "Coins": "coins"
+    "Coins": "coins",
     "Total Wins": "wins",
-    "TNTag Wins": "wins_tntag"
+    "TNTag Wins": "wins_tntag",
     "TNTag Kills": "kills_tntag"
   }
 }
@@ -55,7 +56,7 @@ let display = {
  * 
  * @param {HypixelAPI} HypixelAPI 
  */
-function Command(HypixelAPI) {
+module.exports = function Command(HypixelAPI) {
   /**
    * @type {Hypixel.HypixelAPI}
    */
@@ -65,7 +66,7 @@ function Command(HypixelAPI) {
    * @param {Discord.Message} msg 
    * @param {Discord.Client} bot 
    */
-  function createEmbed(game, name) {
+  async function createEmbed(Game, name) {
     const username = name || "Hypixel"
     
     let uuid = await Api.getUsernameAndUUID(username)
@@ -76,15 +77,44 @@ function Command(HypixelAPI) {
       channel.send("Whoops, something went wrong")
     }
     var player = await Api.player(uuid.uuid)
+    var name = player.displayname
+		if (player.prefix) {
+			/**
+			 * @type {String}
+			 */
+			let prefix = player.prefix
+			for (let i = 0; i < 10; i++) {
+				prefix = prefix.replace(new RegExp("§."), "")
+			}
+			name = prefix + " " + name
+		}
+		else if (player.rank) {
+			name = "["+ player.rank + "] " + name
+		}
+		else if (player.monthlyPackageRank){
+			name = "["+ player.monthlyPackageRank + "] " + name
+		}
+		else if (player.newPackageRank){
+			name = "["+ player.newPackageRank + "] " + name
+		}
+		else if (player.packageRank){
+			name = "["+ player.packageRank + "] " + name
+		}
 
     const GameDetails = display[Game]
+    var color = null
+    if (player.newPackageRank.toLowerCase().includes("++")) {color = "#ffaa00"}
+    else if (player.newPackageRank.toLowerCase().includes("mvp")) {color = "#3d8eb9"}
+    else if (player.newPackageRank.toLowerCase().includes("vip")) {color = "#61bd6d"}
     var embed = new Discord.MessageEmbed()
     .setTitle(Game)
-    .setAuthor(uuid.username, "https://crafatar.com/avatars/"+uuid.uuid)
+    .setAuthor(name)
+    .setThumbnail("https://crafatar.com/avatars/"+uuid.uuid)
+    .setColor(color)
     for (const Display in GameDetails) {
       if (Object.hasOwnProperty.call(GameDetails, Display)) {
         const Path = GameDetails[Display];
-        embed = embed.addField(Display, playerGameDetails[path])
+        embed = embed.addField(Display, player.stats[Game][Path], true)
       }
     }
     return embed
@@ -94,9 +124,11 @@ function Command(HypixelAPI) {
     if (Object.hasOwnProperty.call(display, Game)) {
       const DisplayStats = display[Game];
       subCommands.push(
-        new command({name: Game, help: "Look at a player's stats for "+Game+".", commandFunction: (arg, msg, cmd) => {
-          const name == arg
-          msg.channel.send(createEmbed(Game, arg))
+        new command({name: Game, help: "Look at a player's stats for "+Game+".", commandFunction: async (arg, msg, cmd) => {
+          const name = arg
+          createEmbed(Game, arg).then(embed => {
+            msg.channel.send(embed)
+          })
         }})
       )
     }
