@@ -26,8 +26,12 @@
   },
   "homepage": "https://github.com/a1cd/Discord-Hypixel#readme",
   "dependencies": {
-    "command-based-discord": "^1.0.0",
+    "color-name": "^1.1.4",
+    "command-based-discord": "^2.0.0",
+    "discord.js": "^12.5.3",
     "hypixel-api": "^1.2.0",
-    "hypixel-api-v2": "^1.2.25"
+    "hypixel-api-v2": "^1.2.25",
+    "minecraft-api": "^0.0.3",
+    "request": "^2.88.2"
   }
 }
