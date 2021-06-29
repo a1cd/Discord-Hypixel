@@ -28,6 +28,7 @@
   "dependencies": {
     "color-name": "^1.1.4",
     "command-based-discord": "^2.0.0",
+    "discord-buttons": "^3.2.1",
     "discord.js": "^12.5.3",
     "hypixel-api": "^1.2.0",
     "hypixel-api-v2": "^1.2.25",
